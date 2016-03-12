@@ -1,0 +1,4 @@
+version 1.0.0
+  - initial release
+  - texture database cleanup based on Max (m4x1m) Headroom's Thumbnails Cleaner
+  - addon package cleanup

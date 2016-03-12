@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="32000" id="section_thumbnails">
+		<setting label="32020" type="enum" id="ThumbnailSelectDeleteMove" lvalues="32090|32091|32092" default="0" />
+		<setting label="32021" subsetting="true" type="folder" id="ThumbnailDestinationFolder" default="" source="auto" enable="eq(-1,0) | eq(-1,2)" />
+		<setting label="32022" type="text" id="TexturesDB" default="13" />
+		<setting label="32023" type="text" id="ExtraPattern" default="extra|logo.png|cdart.png" />
+    </category>
+	<category label="32001" id="section_addons">
+		<setting label="32020" type="enum" id="AddonSelectDeleteMove" lvalues="32090|32091|32092" default="0" />
+		<setting label="32021" subsetting="true" type="folder" id="AddonDestinationFolder" default="" source="auto" enable="eq(-1,0) | eq(-1,2)" />
+		<setting label="32024" type="bool" id="DelAddonsSettings" default="true" />
+		<setting label="32025" type="bool" id="DelAddonsPackages" default="false" />
+		<setting label="32026" type="bool" id="LimitAddonsPackages" default="false" />
+		<setting label="32027" subsetting="true" type="number" id="NumAddonsPackages" default="3" enable="eq(-1,true)" />
+    </category>
+    <category label="32002" id="section_advanced">
+		<setting label="32028" type="lsep" />
+		<setting label="32029" type="bool" id="ShowGui" default="false" />
+		<setting label="32030" type="bool" id="ShowMainMenu" default="false" />
+		<setting label="32031" type="bool" id="ShowNotifications" default="true" />
+		<setting label="32032" type="lsep" />
+		<setting label="32033" type="bool" id="CheckMovies" default="true" />
+		<setting label="32034" type="bool" id="CheckSets" default="true" />
+		<setting label="32035" type="bool" id="CheckTVShows" default="true" />
+		<setting label="32036" type="bool" enable="eq(-1,true)" id="CheckSeasons" default="true" />
+		<setting label="32037" type="bool" enable="eq(-2,true)" id="CheckEpisodes" default="true" />
+		<setting label="32038" type="bool" id="CheckMusicVideos" default="true" />
+		<setting label="32039" type="bool" id="CheckVideoGenres" default="true" />
+		<setting label="32040" type="bool" id="CheckMusicArtists" default="true" />
+		<setting label="32041" type="bool" id="CheckMusicAlbums" default="true" />
+		<setting label="32042" type="bool" id="CheckMusicSongs" default="true" />
+		<setting label="32043" type="bool" id="CheckMusicGenres" default="true" />
+		<setting label="32044" type="bool" id="CheckActors" default="true" />
+		<setting label="32045" type="bool" id="CheckAddons" default="true" />
+    </category>
+</settings>
