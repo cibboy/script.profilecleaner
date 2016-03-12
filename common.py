@@ -95,5 +95,5 @@ class RawXBMC():
 		return RawXBMC.Query(Query)
 
 def ConnectToXbmcDb():
-	dbHost = os.path.join(databaseFolder, "Textures" + addonSettings.getSetting("dbTextures") + ".db")
+	dbHost = os.path.join(databaseFolder, "Textures" + addonSettings.getSetting("TexturesDB") + ".db")
 	return sqlite3.connect(dbHost)

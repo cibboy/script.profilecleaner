@@ -657,7 +657,7 @@ class Cleaner:
 		# Move files in destination folder or copy if simulate is active
 		if addonSettings.getSetting("ThumbnailSelectDeleteMove") != "2":
 			countList = 1
-			log("Deleting " + len(self.texturesList) + " remaining textures from the database")
+			log("Deleting " + str(len(self.texturesList)) + " remaining textures from the database")
 			for t in self.texturesList:
 				if showGUI:
 					self.Progress.update((countList * 100) / len(self.texturesList), normalize(addonLanguage(32141)) % len(self.texturesList), t[0], " ")
