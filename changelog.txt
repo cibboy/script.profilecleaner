@@ -1,7 +1,10 @@
+version 1.0.2
+ - Corrected bug that prevented proper execution on Android or other devices not using a specific python version
+
 version 1.0.1
-  - corrected bug that prevented proper execution during texture deletion
+ - Corrected bug that prevented proper execution during texture deletion
 
 version 1.0.0
-  - initial release
-  - texture database cleanup based on Max (m4x1m) Headroom's Thumbnails Cleaner
-  - addon package cleanup
+ - Initial release
+ - Texture database cleanup based on Max (m4x1m) Headroom's Thumbnails Cleaner
+ - Addon package cleanup
