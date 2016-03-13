@@ -1,3 +1,6 @@
+version 1.0.2
+  - corrected bug that prevented proper execution on Android or other devices not using a specific python version
+
 version 1.0.1
   - corrected bug that prevented proper execution during texture deletion
 
