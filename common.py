@@ -24,7 +24,7 @@ userdataFolder    = xbmc.translatePath("special://profile")
 if os.path.exists(os.path.join(userdataFolder, "advancedsettings.xml")):
 	tree = ET.parse(os.path.join(userdataFolder, "advancedsettings.xml"))
 	root = tree.getroot()
-	for node in root.getiterator('substitute'):
+	for node in root.iter('substitute'):
 		cfrom = node.find('from')
 		cto = node.find('to')
 		if cfrom != None and cto != None:
