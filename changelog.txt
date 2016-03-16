@@ -1,3 +1,6 @@
+version 1.0.3
+ - xbmc.python version relaxed in order to allow automatic installation on Gotham and Helix
+
 version 1.0.2
  - Corrected bug that prevented proper execution on Android or other devices not using a specific python version
 
