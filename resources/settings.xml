@@ -17,7 +17,7 @@
     <category label="32002" id="section_advanced">
 		<setting label="32028" type="lsep" />
 		<setting label="32029" type="bool" id="ShowGui" default="false" />
-		<setting label="32030" type="bool" id="ShowMainMenu" default="false" />
+		<setting label="32030" type="bool" id="ShowMainMenu" default="true" />
 		<setting label="32031" type="bool" id="ShowNotifications" default="true" />
 		<setting label="32032" type="lsep" />
 		<setting label="32033" type="bool" id="CheckMovies" default="true" />

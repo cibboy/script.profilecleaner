@@ -1,3 +1,6 @@
+version 1.0.4
+ - Main menu visible by default upon installation
+
 version 1.0.3
  - xbmc.python version relaxed in order to allow automatic installation on Gotham and Helix
 
