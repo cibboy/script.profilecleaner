@@ -1,3 +1,6 @@
+version 1.1.0
+ - Matrix support
+
 version 1.0.4
  - Main menu visible by default upon installation
 
