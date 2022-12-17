@@ -33,10 +33,10 @@ class Cleaner:
 		try:
 			if 'textures' in jSon['result']: getTextures = jSon['result']['textures']
 		except: getTextures = []
-		
+
 		statsT = normalize(addonLanguage(32108)) + ": " + humanReadableSizeOf(self.thumbnailFileSize) + ", " + str(len(self.thumbnailFileList)) + " " + normalize(addonLanguage(32107)) + ", " + str(len(getTextures)) + " " + normalize(addonLanguage(32108))
 		statsA = ""
-		
+
 		if showAddons:
 			# Compute addon size and number of files.
 			totalAddonSize = 0
@@ -49,9 +49,9 @@ class Cleaner:
 			for item in os.listdir(addonRollback):
 				totalAddonSize = totalAddonSize + os.stat(os.path.join(addonRollback, item)).st_size
 				totalAddonFiles = totalAddonFiles + 1
-				
+
 			statsA = normalize(addonLanguage(32109)) + ": " + humanReadableSizeOf(totalAddonSize) + ", " + str(totalAddonFiles) + " " + normalize(addonLanguage(32107))
-		
+
 		# Show stats
 		xbmcgui.Dialog().ok(addonName + " - " + normalize(addonLanguage(32106)), statsT, statsA)
 
@@ -125,30 +125,21 @@ class Cleaner:
 						if item.get('art'):
 							for artKey, artValue in item['art'].items():		#for json art dictionary objects in movies/tvshows/episodes
 								if artKey.startswith('tvshow.') or 'DefaultVideo.png' in artValue: continue	# check for bad season/episode entries *performance 
-								valueText = urllib.parse.unquote_plus(normalize(artValue))
-								valueText = valueText.replace("image://", "")
-								thumbnailsList.append(valueText)
+								cleanandAppendUrl(artValue, thumbnailsList)
 								if item['label'] == "Season 1": # Workaround for tv show seasons all posters
-									seasonAll = valueText.replace("season01", "season-all")
-									thumbnailsList.append(seasonAll)
+									cleanandAppendUrl(artValue.replace("season01", "season-all"), thumbnailsList)
 						if item.get('cast'):
 							for cast in  item['cast']:	#for actors in movies/tvshows/episodes	
 								if cast.get('thumbnail'):
-									valueText = urllib.parse.unquote_plus(normalize(cast['thumbnail']))
-									valueText = valueText.replace("image://", "")
-									thumbnailsList.append(valueText)
+									cleanandAppendUrl(cast['thumbnail'], thumbnailsList)
 						#individuals
 						if item.get('thumbnail'):		#for json thumbnail objects // conditional fails on missing key or emtpy string or None value
-							valueText = urllib.parse.unquote_plus(normalize(item['thumbnail']))
-							valueText = valueText.replace("image://", "")
-							thumbnailsList.append(valueText)        
+							cleanandAppendUrl(item['thumbnail'], thumbnailsList)
 						if item.get('fanart'):			#for json thumbnail objects // conditional fails on missing key or emtpy string or None value
-							valueText = urllib.parse.unquote_plus(normalize(item['fanart']))
-							valueText = valueText.replace("image://", "")
-							thumbnailsList.append(valueText)
+							cleanandAppendUrl(item['fanart'], thumbnailsList)
 						countList = countList + 1
-				thumbnailsList = removeDuplicate(thumbnailsList)
 				if not self.cancelOperation and len(thumbnailsList):
+					thumbnailsList = removeDuplicate(thumbnailsList)
 					self.ExcludeThumbnailHash(thumbnailsList, normalize(
 						addonLanguage(excludeHashLanguageId)))
 				else:
@@ -265,15 +256,18 @@ class Cleaner:
 		# Addons
 		if addonSettings.getSetting("CheckAddons") == "true":
 			jsonrpccommand = '{"jsonrpc": "2.0", "method": "Addons.GetAddons", "params": {"properties": ["thumbnail","fanart"]}, "id": 1}'
-			self._processMediaThumbnails('addons', jsonrpccommand, 32139, 32140)
+			self._processMediaThumbnails('addons', jsonrpccommand, 32139, 32140)			#note: item.get('addonid')
 
-		 # Favorites 			#todo
+		 # Favorites
+		if addonSettings.getSetting("CheckFavorites") == "true":
+			jsonrpccommand = '{"jsonrpc":"2.0","method":"Favourites.GetFavourites","params":{"properties":["thumbnail"]},"id":1}'
+			self._processMediaThumbnails('favourites', jsonrpccommand, 32166, 32167)			#note: item.get('title')
 
 		# Process Textures Database
 		if self.cancelOperation != True:
 			newTexturesDict = {}
 			ExtraPattern = addonSettings.getSetting("ExtraPattern").split("|")
-			ExtraPattern.extend(['DefaultVideo.png', 'DefaultFolder.png'])
+			ExtraPattern.extend(['DefaultVideo.png', 'DefaultFolder.png'])						#add default values
 			for key, t in self.texturesDict.items():
 				if not any(x in t['url'] for x in ExtraPattern): newTexturesDict[key] = t		#dectect entries not matching ExtraPatterns
 				else:		 																	#remove matching entries from TN filelist
@@ -305,7 +299,7 @@ class Cleaner:
 		thumbnailFilesLength = len(self.thumbnailFileList)
 		# Move files in destination folder or copy if simulate is active
 		if addonSettings.getSetting("ThumbnailSelectDeleteMove") != "2":
-			countList = 1			
+			countList = 1
 			log("Deleting " + str(texturesLength) + " remaining textures from the database")
 			for tKey,t in self.texturesDict.items():
 				if showGUI:
@@ -320,25 +314,31 @@ class Cleaner:
 				if showGUI:
 					self.Progress.update(progress, normalize(addonLanguage(32141)) % thumbnailFilesLength, files)
 				try: os.remove(files)
-				except: pass
+				#except: pass
+				except Exception as e:
+					logError("Deleting  File exception: " +str(files)+" " + traceback.format_exc())
 			elif addonSettings.getSetting("ThumbnailSelectDeleteMove") == "0":
 				if showGUI:
 					self.Progress.update(progress, normalize(addonLanguage(32143)) % thumbnailFilesLength, files)
 				try: os.remove(os.path.join(thumbnailBackupFolder, f))
 				except: pass
 				try: shutil.move(files, thumbnailBackupFolder)
-				except: pass
+				#except: pass
+				except Exception as e:
+					logError("Moving File exception: "+ str(files)+" " + traceback.format_exc())
 			elif addonSettings.getSetting("ThumbnailSelectDeleteMove") == "2":
 				if showGUI:
 					self.Progress.update(progress, normalize(addonLanguage(32144)) % thumbnailFilesLength, files)
 				try: shutil.copy2(files, thumbnailBackupFolder)
-				except: pass
+				#except: pass
+				except Exception as e:
+					logError("Copying File exception: "+str(files)+" " + traceback.format_exc())
 			countList = countList + 1
 
 		self.finishAt = datetime.datetime.now()
 		self.tookTime = self.finishAt - self.startedAt
 		log("Thumbnail cleanup terminated in " + str(self.tookTime).split(".")[0])
-		
+
 		# Manage Textual Response
 		# Delete
 		dialogHeading = addonName + " - " + normalize(addonLanguage(32145))
@@ -401,7 +401,7 @@ class Cleaner:
 				fp = os.path.join(dirpath, f)
 				total_size += os.path.getsize(fp)
 		return total_size
-	
+
 	def AddonCleanup(self):
 		self.startedAt = datetime.datetime.now()
 		if addonSettings.getSetting("ThumbnailSelectDeleteMove") == "2": log("Addon deletion simulation started at " + self.startedAt.strftime("%Y-%m-%d %H:%M:%d"))
@@ -415,7 +415,7 @@ class Cleaner:
 				rest, realname = os.path.split(addon["path"])
 				installedAddons.append(addon["addonid"])
 				installedAddons.append(realname)
-		
+
 		self.totalAddonSize = 0
 		self.deletedAddonSize = 0
 		self.deletedAddonNumber = 0
@@ -471,7 +471,7 @@ class Cleaner:
 							self.cancelOperation = True
 							break
 					countList = countList + 1
-		
+
 		if self.cancelOperation != True:
 			if (addonSettings.getSetting("DelAddonsPackages") == "true"):
 				log("Deleting addon packages for uninstalled addons")
@@ -515,7 +515,7 @@ class Cleaner:
 							self.cancelOperation = True
 							break
 					countList = countList + 1 
-		
+
 		if self.cancelOperation != True:
 			if (addonSettings.getSetting("LimitAddonsPackages") == "true"):
 				log("Trimming history of addon packages")
@@ -572,12 +572,12 @@ class Cleaner:
 							self.cancelOperation = True
 							break
 					countList = countList + 1 
-		
+
 		self.finishAt = datetime.datetime.now()
 		self.tookTime = self.finishAt - self.startedAt
 		log("Addon cleanup terminated in " + str(self.tookTime).split(".")[0])
 		log("Total addon size = " + str(humanReadableSizeOf(self.totalAddonSize)))
-		
+
 		# Manage Textual Response
 		# Delete
 		if addonSettings.getSetting("ThumbnailSelectDeleteMove") == "1":
@@ -594,7 +594,7 @@ class Cleaner:
 			log(str(self.deletedAddonNumber) + " file(s) copied. " + humanReadableSizeOf(self.deletedAddonSize) + " recoverable")
 			if showGUI:
 				xbmcgui.Dialog().ok(addonName + " - " + normalize(addonLanguage(32163)), normalize(addonLanguage(32149)) % (str(self.deletedAddonNumber), humanReadableSizeOf(self.deletedAddonSize)))
-	
+
 	def PerformCleanup(self, bitmask):
 		if addonSettings.getSetting("ShowNotifications") == "true" and not showGUI:
 			xbmc.executebuiltin("Notification(%s,%s,2000,%s)" % (addonName, normalize(addonLanguage(32164)), addonIcon))
