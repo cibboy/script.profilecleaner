@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.profilecleaner" name="Profile Cleaner" version="1.0.4" provider-name="zeppy">
+<addon id="script.profilecleaner" name="Profile Cleaner" version="1.1.1" provider-name="zeppy">
 	<requires>
-		<import addon="xbmc.python" version="2.14.0" />
+		<import addon="xbmc.python" version="3.0.0" />
 		<import addon="script.module.simplejson" version="3.3.0" />
 	</requires>
 	<extension point="xbmc.python.script" library="script.py">
@@ -16,5 +16,8 @@
 		<source>https://github.com/cibboy/script.profilecleaner</source>
 		<summary lang="en">Profile Cleaner cleans up your Kodi profile by deleting unused thumbnails, addon packages and addon settings</summary>
 		<description lang="en">Profile Cleaner works by exclusion: the script reads the databases and excludes images and addons found. Once completed, the remaining images, addon packages and addon settings found in your profile will be deleted - or moved, according to your preference. Based on Max (m4x1m) Headroom's Thumbnails Cleaner.</description>
+		<assets>
+			<icon>icon.png</icon>
+		</assets>
 	</extension>
 </addon>

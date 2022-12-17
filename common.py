@@ -1,5 +1,6 @@
 import xbmc, xbmcaddon, xbmcvfs
 import os, sqlite3, unicodedata
+import  urllib.parse
 import xml.etree.ElementTree as ET
 
 addonSettings     = xbmcaddon.Addon("script.profilecleaner")
@@ -7,7 +8,7 @@ addonAuthor       = addonSettings.getAddonInfo("author")
 addonName         = addonSettings.getAddonInfo("name")
 addonVersion      = addonSettings.getAddonInfo("version")
 addonLanguage     = addonSettings.getLocalizedString
-addonProfile      = xbmc.translatePath(addonSettings.getAddonInfo("profile"))
+addonProfile      = xbmcvfs.translatePath(addonSettings.getAddonInfo("profile"))
 addonIcon         = os.path.join(addonSettings.getAddonInfo("path"), "icon.png")
 addonBackup       = os.path.join(addonProfile, "backup")
 xbmcVersion       = xbmc.getInfoLabel("System.BuildVersion").split(" ")[0]
@@ -15,12 +16,12 @@ xbmcVersion       = xbmc.getInfoLabel("System.BuildVersion").split(" ")[0]
 if not xbmcvfs.exists(addonProfile): xbmcvfs.mkdir(addonProfile)
 if not xbmcvfs.exists(addonBackup): xbmcvfs.mkdir(addonBackup)
 
-databaseFolder    = xbmc.translatePath("special://database")
-thumbnailsFolder  = xbmc.translatePath("special://thumbnails")
-homeFolder  = xbmc.translatePath("special://home")
+databaseFolder    = xbmcvfs.translatePath("special://database")
+thumbnailsFolder  = xbmcvfs.translatePath("special://thumbnails")
+homeFolder  = xbmcvfs.translatePath("special://home")
 
 # Read advancedsettings.xml for possible thumbnail folder redirection
-userdataFolder    = xbmc.translatePath("special://profile")
+userdataFolder    = xbmcvfs.translatePath("special://profile")
 if os.path.exists(os.path.join(userdataFolder, "advancedsettings.xml")):
 	tree = ET.parse(os.path.join(userdataFolder, "advancedsettings.xml"))
 	root = tree.getroot()
@@ -41,21 +42,24 @@ if not addonBackupFolder:
 showGUI = (addonSettings.getSetting("ShowGui") == "true")
 
 def log(msg):
-	xbmc.log("[%s] - %s" % (addonName, msg))
+	xbmc.log("[%s] - %s" % (addonName, msg), xbmc.LOGINFO)
 
+def logError(msg):
+	xbmc.log("[%s] - %s" % (addonName, msg), xbmc.LOGERROR)
+ 
 def _unicode(text, encoding='utf-8'):
-	try: text = unicode(text, encoding)
+	try: text = str(text, encoding)
 	except: pass
 	return text
 
 def normalize(text):
-	try: text = unicodedata.normalize('NFKD', _unicode(text)).encode('utf-8')
+	try: text = unicodedata.normalize('NFKD', _unicode(text))#.encode('utf-8')
 	except: pass
 	return text
 
 def getHash(string):
 	string = string.lower()
-	bytes = bytearray(string)
+	bytes = bytearray(string, encoding='utf-8')
 	crc = 0xffffffff;
 	for b in bytes:
 		crc = crc ^ (b << 24)
@@ -73,10 +77,15 @@ def humanReadableSizeOf(size):
 	return "%3.1f%s" % (size, 'TB')
 
 def removeDuplicate(lists):
-	log(addonLanguage(32249))
+	#log(addonLanguage(32249))	#todo: review
 	seen = set()
 	seenAdd = seen.add
 	return [ x for x in lists if x not in seen and not seenAdd(x) ]
+
+def cleanandAppendUrl( url:str, urllist: list ):
+	valueText = urllib.parse.unquote_plus(normalize(url))
+	valueText = valueText.replace("image://", "")
+	urllist.append(valueText)   
 
 class RawXBMC():
 	@staticmethod

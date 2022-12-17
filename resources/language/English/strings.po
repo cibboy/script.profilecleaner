@@ -141,6 +141,10 @@ msgctxt "#32045"
 msgid "Clean Addons"
 msgstr ""
 
+msgctxt "#32046"
+msgid "Clean Favorites"
+msgstr ""
+
 msgctxt "#32090"
 msgid "Move"
 msgstr ""
@@ -417,4 +421,12 @@ msgstr ""
 
 msgctxt "#32165"
 msgid "Cleanup complete"
+msgstr ""
+
+msgctxt "#32166"
+msgid "Reading data for Favorites"
+msgstr ""
+
+msgctxt "#32167"
+msgid "Comparing images for Favorites to exclude files"
 msgstr ""

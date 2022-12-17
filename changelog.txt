@@ -1,3 +1,10 @@
+version 1.1.1
+ - added Favorites
+ - fixed addon's icon
+
+version 1.1.0
+ - Matrix support
+
 version 1.0.4
  - Main menu visible by default upon installation
 
