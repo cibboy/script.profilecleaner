@@ -1,5 +1,6 @@
 import xbmc, xbmcaddon, xbmcvfs
 import os, sqlite3, unicodedata
+import  urllib.parse
 import xml.etree.ElementTree as ET
 
 addonSettings     = xbmcaddon.Addon("script.profilecleaner")
@@ -80,6 +81,11 @@ def removeDuplicate(lists):
 	seen = set()
 	seenAdd = seen.add
 	return [ x for x in lists if x not in seen and not seenAdd(x) ]
+
+def cleanandAppendUrl( url:str, urllist: list ):
+	valueText = urllib.parse.unquote_plus(normalize(url))
+	valueText = valueText.replace("image://", "")
+	urllist.append(valueText)   
 
 class RawXBMC():
 	@staticmethod

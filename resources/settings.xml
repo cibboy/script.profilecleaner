@@ -33,5 +33,6 @@
 		<setting label="32043" type="bool" id="CheckMusicGenres" default="true" />
 		<setting label="32044" type="bool" id="CheckActors" default="true" />
 		<setting label="32045" type="bool" id="CheckAddons" default="true" />
+		<setting label="32046" type="bool" id="CheckFavorites" default="true" />
     </category>
 </settings>

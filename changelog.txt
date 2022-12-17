@@ -1,3 +1,7 @@
+version 1.1.1
+ - added Favorites
+ - fixed addon's icon
+
 version 1.1.0
  - Matrix support
 
